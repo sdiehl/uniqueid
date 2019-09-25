@@ -1,4 +1,11 @@
-.DS_Store
+.stack-work/
+*.sw[pon]
+*.prof
+*.prof.html
+pairing.cabal
+*~
 *.hi
 *.o
-dist/*
+.ghc.environment.*
+dist*/
+TAGS

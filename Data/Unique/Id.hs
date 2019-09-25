@@ -14,7 +14,7 @@ module Data.Unique.Id (
  ) where
 
 import GHC.Exts
-import GHC.IOBase ( unsafeDupableInterleaveIO )
+import GHC.IO.Unsafe ( unsafeDupableInterleaveIO )
 
 import Data.IORef
 import System.IO.Unsafe ( unsafePerformIO )
@@ -55,15 +55,17 @@ splitIdSupplyL ids = ids1 : splitIdSupplyL ids2
 idFromSupply :: IdSupply -> Id
 idFromSupply (IdSupply n _ _) = Id (I# n)
 
-instance Eq Id where Id (I# x) == Id (I# y) = x ==# y
+instance Eq Id 
+ where 
+  Id (I# x) == Id (I# y) = isTrue# (x ==# y)
 
 instance Ord Id
  where
-  Id (I# x) <  Id (I# y) = x <#  y
-  Id (I# x) <= Id (I# y) = x <=# y
+  Id (I# x) <  Id (I# y) = isTrue# (x <#  y)
+  Id (I# x) <= Id (I# y) = isTrue# (x <=# y)
 
   compare (Id (I# x)) (Id (I# y)) =
-   if x ==# y then EQ else if x <# y then LT else GT
+   if isTrue# (x ==# y) then EQ else if isTrue# (x <# y) then LT else GT
 
 instance Show Id
  where
